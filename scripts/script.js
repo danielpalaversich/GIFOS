@@ -17,6 +17,15 @@ let barra_busqueda = document.getElementById('barra_busqueda');
 let resultado_titulo = document.getElementById('resultado_titulo');
 let ver_mas = document.getElementById('ver_mas');
 let lupa_close = document.getElementById('lupa-close');
+let contenedor_resultado = document.getElementById('contenedor_resultado');
+
+//elementos de gif
+let icon_max = document.querySelector('.icon_max');
+
+//seccion maxgif
+let maxgif = document.querySelector('.maxgif');
+let boton_cerrar = document.getElementsByClass('.boton_cerrar');
+
 
 // variagle global de contenido que busca
 var busqueda = "";
@@ -110,7 +119,7 @@ function crearimg(imagen,usuario,titulo) {
     //DOM Buscar ubicacion para crear los elementos
     let elemento = document.createElement('DIV');
     elemento.setAttribute('class', 'xxx');
-    document.querySelector('.contenedor_resultado').appendChild(elemento);
+    document.querySelector('#contenedor_resultado').appendChild(elemento);
     let x = document.querySelector('.xxx');
     x.outerHTML = cadena;
 }
@@ -119,8 +128,13 @@ function crearimg(imagen,usuario,titulo) {
 barra_busqueda.addEventListener('keyup', ()=> {
     if (event.which === 13 || event.keyCode == 13) {
 
+        //Eliminando todos los hijos de un elemento
+        while (contenedor_resultado.hasChildNodes()) {  
+          contenedor_resultado.removeChild(contenedor_resultado.firstChild);
+        }
 
         busqueda = barra_busqueda.value;
+        ver_mas.style.visibility = "visible";
 
         buscar(busqueda, 12, 0);
     }
@@ -141,7 +155,7 @@ if ( busqueda.length = 0 ) {
     lupa_close.addEventListener('click', ()=>{
 
     barra_busqueda.value = "";
-    busqueda = "";
+    // busqueda = "";
     console.log("borrando busqueda");
   })
 }
@@ -153,6 +167,17 @@ ver_mas.addEventListener('click', ()=>{
 })
 
 
+//no funciona tiene algo que ver por el id?
+icon_max.addEventListener('click', ()=>{
+    maxgif.style.visibility = "visible";
+})
+
+//no funciona tiene algo que ver por el id?
+boton_cerrar.addEventListener('click', ()=>{
+    console.log("Click boton cerrar");
+    maxgif.style.visibility = "hidden";
+})
+
 
 barra_busqueda.addEventListener('keyup', ()=> {
 
@@ -161,9 +186,6 @@ barra_busqueda.addEventListener('keyup', ()=> {
 })
 
 
-
-
-//
 
 function sugerencias() {
 

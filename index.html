@@ -11,6 +11,27 @@
 </head>
 <body>
 
+    <!-- +++++++++++++++++++++++++++ SECCION maxgif +++++++++++++++++++++++++++ -->
+
+	<div class="seccion maxgif"> 
+  		<img src="./assets/button-left.svg" class="flechas"/>
+  		<div>
+  			<img src="https://picsum.photos/695/385" class="imagen">
+  			<div class="contenedor">
+  				<h6>User</h6>
+				<h5>Titulo GIFO</h5>
+				<a href="#" class="icono">
+					<img src="./assets/icon-fav-hover.svg" class="boton"/>
+  				</a>
+  				<a href="#" class="icono">
+					<img src="./assets/icon-download.svg" class="boton"/>
+  				</a>
+  			</div>
+  		</div>
+  		<img src="./assets/button-right.svg" class="flechas"/>
+   		<img src="./assets/button-close.svg" class="boton_cerrar"/>
+  	</div>
+
 	<!-- +++++++++++++++++++++++++++  HEADER  +++++++++++++++++++++++++++ -->
 
     <header>
@@ -71,9 +92,9 @@
 		<div>
 			<h3 id="resultado_titulo">Resultado*</h3>
 		</div>
-		<div class="contenedor_resultado">
+		<div id="contenedor_resultado">
 		</div>
-		<button id="ver_mas" class="boton">VER MÁS</button>
+		<button id="ver_mas" class="boton" style="visibility: hidden;" >VER MÁS</button>
 	</div>
 
 	<!-- +++++++++++++++++++++++++++ SECCION trending +++++++++++++++++++++++++++ -->
@@ -113,9 +134,9 @@
 		    <div class='caja'>
 		      <img src="https://picsum.photos/260/200" class='imagen'>
 		      <div class='contenido'>
-		        <a href='#' class='icono'><img src='./assets/icon-fav-hover.svg' class='icono_contenedor'/></a>
-		        <a href='#' class='icono'><img src='./assets/icon-download.svg' class='icono_contenedor'/></a>
-		        <a href='#' class='icono'><img src='./assets/icon-max.svg' class='icono_contenedor'/></a>
+		        <a href='#' class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
+		        <a href='#' class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
+		        <a href='#' class='icono'><img src='./assets/icon-max.svg' class='icon_max'/></a>
 		        <h6>User</h6>
 		        <h5>Titulo GIFO</h5>
 		      </div>
@@ -139,6 +160,8 @@
 			<p>© GIFOS 2020 All Rights Reserved.</p>
 		</div>
 	</footer>
+
+
     
     <script src="./scripts/script.js"></script> 
 

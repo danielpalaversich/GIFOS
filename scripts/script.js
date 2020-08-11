@@ -19,17 +19,19 @@ let ver_mas = document.getElementById('ver_mas');
 let lupa_close = document.getElementById('lupa-close');
 let contenedor_resultado = document.getElementById('contenedor_resultado');
 
+let sin_resultados = document.querySelector('.resultado-vacio');
+
 //elementos de gif
 let icon_max = document.querySelector('.icon_max');
 
 //seccion maxgif
 let maxgif = document.querySelector('.maxgif');
-let boton_cerrar = document.getElementsByClass('.boton_cerrar');
+let boton_cerrar = document.querySelector('.boton_cerrar');
 
 
 // variagle global de contenido que busca
 var busqueda = "";
-let limit = 12;
+let limit = 12; //cantidad de gif solicitados al servidor
 let offset = 0;
 
 
@@ -53,14 +55,32 @@ function buscar(q,limit,offset){
         
         console.log(data);
         //console.log(data.data[1].images.original.url);
+        //console.log(data.pagination.count);
+        let cantidad = data.pagination.count; //cantidad de gif devuelto por el servidor
 
-        for (var i = 0; i < limit; i++) {
+        if (cantidad > 0) {
 
-          crearimg(
-          data.data[i].images.preview_gif.url,
-          data.data[i].username,
-          data.data[i].title
-          );
+          for (var i = 0; i < cantidad; i++) {
+
+            crearimg(
+            data.data[i].images.preview_gif.url,
+            data.data[i].username,
+            data.data[i].title
+            );
+          }
+
+          resultado_vacio("hidden")
+
+          if (cantidad < 12) {
+            ver_mas.style.visibility = "hidden";
+          } else {
+            ver_mas.style.visibility = "visible";
+          }
+
+        } else {
+
+          resultado_vacio("visible");
+          ver_mas.style.visibility = "hidden";
 
         }
 
@@ -108,13 +128,14 @@ function crearimg(imagen,usuario,titulo) {
     <div class='caja'>
       <img src=${imagen} class='imagen'>
       <div class='contenido'>
-        <a href='#' class='icono'><img src='./assets/icon-fav-hover.svg' class='icono_contenedor'/></a>
-        <a href='#' class='icono'><img src='./assets/icon-download.svg' class='icono_contenedor'/></a>
-        <a href='#' class='icono'><img src='./assets/icon-max.svg' class='icono_contenedor'/></a>
+        <a class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
+        <a class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
+        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max'/></a>
         <h6>${usuario}</h6>
         <h5>${titulo}</h5>
       </div>
-    </div>`;
+    </div>
+    `;
 
     //DOM Buscar ubicacion para crear los elementos
     let elemento = document.createElement('DIV');
@@ -134,7 +155,6 @@ barra_busqueda.addEventListener('keyup', ()=> {
         }
 
         busqueda = barra_busqueda.value;
-        ver_mas.style.visibility = "visible";
 
         buscar(busqueda, 12, 0);
     }
@@ -169,10 +189,10 @@ ver_mas.addEventListener('click', ()=>{
 
 //no funciona tiene algo que ver por el id?
 icon_max.addEventListener('click', ()=>{
-    maxgif.style.visibility = "visible";
+    console.log("Click boton maximizar");
+    maxgif.style.visibility = "visible"; 
 })
 
-//no funciona tiene algo que ver por el id?
 boton_cerrar.addEventListener('click', ()=>{
     console.log("Click boton cerrar");
     maxgif.style.visibility = "hidden";
@@ -181,7 +201,7 @@ boton_cerrar.addEventListener('click', ()=>{
 
 barra_busqueda.addEventListener('keyup', ()=> {
 
-  sugerencias();
+    sugerencias();
 
 })
 
@@ -204,5 +224,11 @@ function sugerencias() {
       ultima_busqueda = barra_busqueda.value
 
   }
+
+}
+
+function resultado_vacio(estado) {
+
+  sin_resultados.style.visibility = estado;
 
 }

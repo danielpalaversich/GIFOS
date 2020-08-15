@@ -16,7 +16,7 @@
 	<div class="seccion maxgif"> 
   		<img src="./assets/button-left.svg" class="flechas"/>
   		<div>
-  			<img src="https://picsum.photos/695/385" class="imagen">
+  			<img src="https://picsum.photos/695/385" class="imagen_maxgif">
   			<div class="contenedor">
   				<h6>User</h6>
 				<h5>Titulo GIFO</h5>
@@ -61,23 +61,17 @@
 		<h1>Inspírate, busca, guarda, y crea <br> los mejores <span id="gif">GIFOS</span></h1>
 		<div>
 			<img src="./assets/ilustra_header.svg" id="buscar" class="ilustra"/>
-		</div>
-		<div id="buscador_general">
-			<div id="barra">
-				<img src="./assets/icon-search.svg" id="lupa-none" class="lupa"/>
-				<input type="text" id="barra_busqueda" placeholder="Busca GIFOS y más">
-				<img src="./assets/close.svg" id="lupa-close"/>
+			<div id="buscador_general">
+				<div id="barra">
+					<img src="./assets/icon-search.svg" id="lupa-none" class="lupa"/>
+					<input type="text" id="barra_busqueda" placeholder="Busca GIFOS y más">
+					<img src="./assets/close.svg" id="lupa-close"/>
+				</div>
+				<div id="sugerencias_lista">
+				</div>
 			</div>
-			<div id="sugerencias_lista">
-			</div>
 		</div>
-
-		<div>
-			<h4>Trending:</h4>
-			<a href="https://www.facebook.com">Reactions</a>
-			<a href="https://www.twitter.com">Entertainment</a>
-			<a href="https://www.instagram.com">Sports</a>
-			<a href="https://www.instagram.com">Artists</a>
+		<div id="trending_lista">
 		</div>
 	</div>
 
@@ -89,11 +83,11 @@
 		</div>
 		<div id="contenedor_resultado">
 		</div>
-		<button id="ver_mas" class="boton" style="visibility: hidden;" >VER MÁS</button>
+		<button id="ver_mas" class="boton" style="display: none;" >VER MÁS</button>
 	</div>
 
-	<div class="seccion resultado-vacio">
-		<img src='./assets/icon-busqueda-sin-resultado.svg' class='sin_resultado'/>
+	<div class="seccion sinresultado_contenedor" style="display: none;">
+		<img src='./assets/icon-busqueda-sin-resultado.svg' class='sinresultado_item'/>
 		<p>Intenta con otra búsqueda.</p>
 	</div>
 
@@ -102,8 +96,6 @@
 	<div class="seccion trending"> 
 		<div>
 			<h3>Trending GIFOS</h3>
-		</div>
-		<div>
 			<p>Mira los últimos GIFO de nuestra comunidad.</p>
 		</div>
 

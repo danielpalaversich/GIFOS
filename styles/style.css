@@ -13,10 +13,13 @@
 
 /* ------------------------ SECCION busqueda ------------------------ */
 
+body {
+	text-align: center;
+}
+
 }
 
 .busqueda {
-	margin: 120px 200px auto 200px;
 	font-family: 'Montserrat';
 	color: #572EE5;
 }
@@ -33,11 +36,12 @@
 }
 
 .busqueda {
+	margin: 100px 0px 0px 0px;
 	display: grid;
 	grid-template-columns: auto;
-	margin: 100px 0px 0px 0px;
-	text-align: center;
-	justify-content: center;
+	justify-items: center;
+	grid-template-rows: auto auto auto auto;
+	grid-row-gap: 40px;
 }
 
 .busqueda #buscador_general {
@@ -118,10 +122,14 @@
 /* ------------------------ SECCION trending ------------------------ */
 
 .trending {
-	margin: 120px 200px auto 200px;
+	margin: auto 200px auto 200px;
 	font-family: 'Montserrat';
 	margin: 100px 0px 0px 0px;
-	text-align: center;
+	display: grid;
+	grid-template-columns: auto;
+	justify-items: center;
+	grid-template-rows: auto auto auto;
+	grid-row-gap: 30px;
 }
 
 .trending h3 {
@@ -139,7 +147,7 @@
 	display: grid;
 	grid-template-columns: auto auto auto auto auto auto;
 	grid-gap: 10px;
-	justify-content: center;
+	justify-items: center;
 }
 
 .trending .flechas {
@@ -154,15 +162,18 @@
 .resultado-busqueda {
 	font-family: 'Montserrat';
 	color: #572EE5;
-	margin: 100px 0px 0px 0px;
-	text-align: center;
+	margin: 50px 0px 0px 0px;
+	display: grid;
+	grid-template-columns: auto;
+	justify-items: center;
+	grid-template-rows: auto auto auto;
+	grid-row-gap: 40px;
 }
 
 .resultado-busqueda #contenedor_resultado {
 	display: grid;
 	grid-gap: 29px;
 	grid-template-columns: auto auto auto auto;
-	justify-content: center;
 }
 
 .resultado-busqueda .boton {
@@ -172,13 +183,13 @@
 	border-radius: 25px;
 }
 
-
-.resultado-vacio {
-	visibility: hidden;
+.sinresultado_contenedor {
+	display: none;
 	text-align: center;
 }
 
-.resultado-vacio p {
+.sinresultado_contenedor p {
+	margin-top: 20px; 
 	font-family: Montserrat;
 	font-size: 22px;
 	color: #50E3C2;

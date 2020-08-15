@@ -25,10 +25,7 @@ let lupa_close = document.getElementById('lupa-close');
 let sugerencias_lista = document.getElementById('sugerencias_lista');
 let contenedor_resultado = document.getElementById('contenedor_resultado');
 
-let sin_resultados = document.querySelector('.resultado-vacio');
-
-//elementos de gif
-let icon_max = document.querySelector('.icon_max');
+let sinresultado_contenedor = document.querySelector('.sinresultado_contenedor');
 
 //seccion maxgif
 let maxgif = document.querySelector('.maxgif');
@@ -46,7 +43,6 @@ async function llamadaApi(url) {
   const data = await resp.json();
   return data
   // console.log(data); //mostrar lo obtenido en consola
-  console.log(data);
 }
 
 function buscar(q,limit,offset){
@@ -73,22 +69,25 @@ function buscar(q,limit,offset){
             data.data[i].images.preview_gif.url,
             data.data[i].username,
             data.data[i].title,
-            data.data[i].id
+            data.data[i].id,
+            data.data[i].images.original.url
             );
           }
 
-          resultado_vacio("hidden")
+          maximixar();
+
+          resultado_vacio("none")
 
           if (cantidad < 12) {
-            ver_mas.style.visibility = "hidden";
+            ver_mas.style.display = "none";
           } else {
-            ver_mas.style.visibility = "visible";
+            ver_mas.style.display = "inline";
           }
 
         } else {
 
-          resultado_vacio("visible");
-          ver_mas.style.visibility = "hidden";
+          resultado_vacio("inline");
+          ver_mas.style.display = "none";
 
         }
 
@@ -129,6 +128,86 @@ function sugerencias(q){
     })
 }
 
+trending_listas();
+
+function trending_listas(){
+
+    let ultima_busqueda = "";
+
+    let url = `https://api.giphy.com/v1/trending/searches?api_key=${api_key}`;
+
+    let info = llamadaApi(url);
+    info.then(data => {
+
+      // let cantidad = data.pagination.count; //cantidad de gif devuelto por el servidor
+      let cantidad = 5;
+        
+      let elemento = document.createElement('h4');
+      elemento.innerHTML = "Trending:";
+      document.querySelector('#trending_lista').appendChild(elemento);
+
+        for (let i = 0; i<cantidad; i++){
+          crear_trending(data.data[i])
+        }
+
+        ultima_busqueda = barra_busqueda.value
+
+        busqueda_trending();
+
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
+function trending(q,limit,offset){
+
+    eliminar_lista_sugerencias();
+
+    resultado_titulo.textContent = q;
+
+    let url = `http://api.giphy.com/v1/gifs/search?q=${q}&api_key=${api_key}&limit=${limit}&offset=${offset}`;
+
+    let info = llamadaApi(url);
+    info.then(data => {
+        
+        // console.log(data.data[0]);
+        // console.log(data.pagination.count);
+
+        let cantidad = data.pagination.count; //cantidad de gif devuelto por el servidor
+
+        if (cantidad > 0) {
+
+          for (var i = 0; i < cantidad; i++) {
+
+            crearimg(
+            data.data[i].images.preview_gif.url,
+            data.data[i].username,
+            data.data[i].title,
+            data.data[i].id,
+            data.data[i].images.original.url
+            );
+          }
+
+          resultado_vacio("none")
+
+          if (cantidad < 12) {
+            ver_mas.style.display = "none";
+          } else {
+            ver_mas.style.display = "inline";
+          }
+
+        } else {
+
+          resultado_vacio("inline");
+          ver_mas.style.display = "none";
+
+        }
+
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
 // contenedor de resultado busqueda
 /*let contenedor = document.getElementById('contenedor');
 
@@ -162,14 +241,14 @@ dog.then(data => {
     console.error('fetch failed', err);
 })*/
 
-function crearimg(imagen,usuario,titulo,id) {
+function crearimg(imagen,usuario,titulo,id, original) {
     let cadena = `
     <div class='caja'>
       <img src=${imagen} class='imagen'>
       <div class='contenido'>
         <a class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
-        <a class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
-        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-id='${id}'/></a>
+        <a href="https://i.giphy.com/media/${id}/giphy.gif" download="filename" class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
+        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-link='${original}' data-id='${id}'/></a>
         <h6>${usuario}</h6>
         <h5>${titulo}</h5>
       </div>
@@ -203,7 +282,7 @@ if ( busqueda.length = 0 ) {
     busqueda = barra_busqueda.value;
 
     buscar(busqueda, 12, 0);
-    console.log("realizando busqueda");
+    //console.log("realizando busqueda");
   })
 
 } else {
@@ -214,7 +293,7 @@ if ( busqueda.length = 0 ) {
 
     barra_busqueda.value = "";
     // busqueda = "";
-    console.log("borrando busqueda");
+    //console.log("borrando busqueda");
   })
 }
 
@@ -223,16 +302,8 @@ ver_mas.addEventListener('click', ()=>{
     buscar(busqueda, limit, offset);
 })
 
-//no funciona tiene algo que ver por el id?
-icon_max.addEventListener('click', (e)=>{
-    console.log("Click boton maximizar");
-
-    let id = e.target.dataset.id;
-    maximixar(id);
-})
-
 boton_cerrar.addEventListener('click', ()=>{
-    console.log("Click boton cerrar");
+    //console.log("Click boton cerrar");
     maxgif.style.visibility = "hidden";
 })
 
@@ -255,16 +326,9 @@ barra_busqueda.addEventListener('keyup', ()=> {
 
 function resultado_vacio(estado) {
 
-  sin_resultados.style.visibility = estado;
-
+  sinresultado_contenedor.style.display = estado;
 }
 
-function maximixar(id) {
-
-  
-  maxgif.style.visibility = "visible";
-
-}
 
 function eliminar_lista_sugerencias() {
 
@@ -318,5 +382,66 @@ function busqueda_sugerencia() {
     });
 
   }
+
+}
+
+function crear_trending(name) {
+    let cadena = `
+    <a class="trending_item">${name}</a>,
+    `;
+
+    //DOM Buscar ubicacion para crear los elementos
+    let elemento = document.createElement('a');
+    elemento.setAttribute('class', 'xxx');
+    document.querySelector('#trending_lista').appendChild(elemento);
+    let x = document.querySelector('.xxx');
+    x.outerHTML = cadena;
+
+}
+
+function busqueda_trending() {
+
+  if (trending_lista.childElementCount > 0) {
+
+    const boton = document.querySelectorAll('.trending_item');
+
+    boton.forEach(function (item) {
+
+      item.addEventListener('click', function 
+      () {
+          //console.log(item.textContent);
+          eliminar_lista_resultado()
+          barra_busqueda.value = item.textContent;
+          busqueda = item.textContent;
+          buscar(item.textContent, limit, offset);
+
+      });
+
+    });
+
+  }
+
+}
+
+maximixar();
+
+function maximixar() {
+
+  const boton = document.querySelectorAll('.icon_max');
+
+  boton.forEach(function (item) {
+
+    item.addEventListener('click', function 
+    () {
+
+        let imagen_maxgif = document.querySelector(".imagen_maxgif");
+        console.log(item.dataset.link);
+        let imagen = maxgif.dataset.link
+        maxgif.style.visibility = "visible";
+        imagen_maxgif.setAttribute('src', imagen);
+
+    });
+
+  });
 
 }

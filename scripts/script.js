@@ -5,6 +5,11 @@
 - Objeto y constructor para los resultados
 - Usar una sola llamada para el servidor con fecth
 - Guardar en el Localstorage
+
+
+
+
+
 - Como detectar segun lo escrito la llamada de sugerencias
 
 // ------------------------------ SOLICITUD DE GIF ------------------------------ 
@@ -17,6 +22,7 @@ let barra_busqueda = document.getElementById('barra_busqueda');
 let resultado_titulo = document.getElementById('resultado_titulo');
 let ver_mas = document.getElementById('ver_mas');
 let lupa_close = document.getElementById('lupa-close');
+let sugerencias_lista = document.getElementById('sugerencias_lista');
 let contenedor_resultado = document.getElementById('contenedor_resultado');
 
 let sin_resultados = document.querySelector('.resultado-vacio');
@@ -34,28 +40,29 @@ var busqueda = "";
 let limit = 12; //cantidad de gif solicitados al servidor
 let offset = 0;
 
+//lamada a la api
+async function llamadaApi(url) {
+  const resp = await fetch(url);
+  const data = await resp.json();
+  return data
+  // console.log(data); //mostrar lo obtenido en consola
+  console.log(data);
+}
 
 function buscar(q,limit,offset){
 
-    resultado_titulo.textContent = `${q}`;
+    eliminar_lista_sugerencias();
 
-    async function llamadaApi() {
+    resultado_titulo.textContent = q;
 
-      let url = `http://api.giphy.com/v1/gifs/search?q=${q}&api_key=${api_key}&limit=${limit}&offset=${offset}`;
-      // console.log(`http://api.giphy.com/v1/gifs/search?q=${q}&api_key=${api_key}&limit=${limit}&offset=${offset}`)
-      const resp = await fetch(url);
-      const data = await resp.json();
-      return data
-    }
+    let url = `http://api.giphy.com/v1/gifs/search?q=${q}&api_key=${api_key}&limit=${limit}&offset=${offset}`;
 
-    // console.log(data);
-
-    let info = llamadaApi();
+    let info = llamadaApi(url);
     info.then(data => {
         
-        console.log(data);
-        //console.log(data.data[1].images.original.url);
-        //console.log(data.pagination.count);
+        // console.log(data.data[0]);
+        // console.log(data.pagination.count);
+
         let cantidad = data.pagination.count; //cantidad de gif devuelto por el servidor
 
         if (cantidad > 0) {
@@ -65,7 +72,8 @@ function buscar(q,limit,offset){
             crearimg(
             data.data[i].images.preview_gif.url,
             data.data[i].username,
-            data.data[i].title
+            data.data[i].title,
+            data.data[i].id
             );
           }
 
@@ -89,6 +97,37 @@ function buscar(q,limit,offset){
     })
 }
 
+function sugerencias(q){
+
+    let ultima_busqueda = "";
+
+    let url = `https://api.giphy.com/v1/gifs/search/tags?q=${q}&api_key=${api_key}`;
+
+    let info = llamadaApi(url);
+    info.then(data => {
+
+      let cantidad = data.pagination.count; //cantidad de gif devuelto por el servidor
+        
+      let elemento = document.createElement('li');
+      elemento.setAttribute('id', 'linea');
+      document.querySelector('#sugerencias_lista').appendChild(elemento);
+
+      if (barra_busqueda.value != ultima_busqueda) {
+
+        for (let i = 0; i<cantidad; i++){
+          crear_sugerencias(data.data[i].name)
+        }
+
+        ultima_busqueda = barra_busqueda.value
+
+        busqueda_sugerencia();
+
+      }
+
+    }).catch(error => {
+        console.log(error);
+    })
+}
 
 // contenedor de resultado busqueda
 /*let contenedor = document.getElementById('contenedor');
@@ -123,14 +162,14 @@ dog.then(data => {
     console.error('fetch failed', err);
 })*/
 
-function crearimg(imagen,usuario,titulo) {
+function crearimg(imagen,usuario,titulo,id) {
     let cadena = `
     <div class='caja'>
       <img src=${imagen} class='imagen'>
       <div class='contenido'>
         <a class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
         <a class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
-        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max'/></a>
+        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-id='${id}'/></a>
         <h6>${usuario}</h6>
         <h5>${titulo}</h5>
       </div>
@@ -149,10 +188,7 @@ function crearimg(imagen,usuario,titulo) {
 barra_busqueda.addEventListener('keyup', ()=> {
     if (event.which === 13 || event.keyCode == 13) {
 
-        //Eliminando todos los hijos de un elemento
-        while (contenedor_resultado.hasChildNodes()) {  
-          contenedor_resultado.removeChild(contenedor_resultado.firstChild);
-        }
+        eliminar_lista_resultado();
 
         busqueda = barra_busqueda.value;
 
@@ -174,23 +210,25 @@ if ( busqueda.length = 0 ) {
 
     lupa_close.addEventListener('click', ()=>{
 
+    eliminar_lista_sugerencias()
+
     barra_busqueda.value = "";
     // busqueda = "";
     console.log("borrando busqueda");
   })
 }
 
-
 ver_mas.addEventListener('click', ()=>{
     offset += 12;
     buscar(busqueda, limit, offset);
 })
 
-
 //no funciona tiene algo que ver por el id?
-icon_max.addEventListener('click', ()=>{
+icon_max.addEventListener('click', (e)=>{
     console.log("Click boton maximizar");
-    maxgif.style.visibility = "visible"; 
+
+    let id = e.target.dataset.id;
+    maximixar(id);
 })
 
 boton_cerrar.addEventListener('click', ()=>{
@@ -201,34 +239,84 @@ boton_cerrar.addEventListener('click', ()=>{
 
 barra_busqueda.addEventListener('keyup', ()=> {
 
-    sugerencias();
+  if (event.which === 32 || event.keyCode == 32) {
+    sugerencias(barra_busqueda.value);
+  }
+})
 
+barra_busqueda.addEventListener('keyup', ()=> {
+
+  if (event.which === 8 || event.keyCode == 8) {
+    eliminar_lista_sugerencias();
+  }
 })
 
 
 
-function sugerencias() {
+function resultado_vacio(estado) {
 
-  let ultima_busqueda = "";
+  sin_resultados.style.visibility = estado;
 
-  while (barra_busqueda.value != ultima_busqueda) {
+}
 
-      console.log("llama servidor");
-      console.log("llamada recibida");
+function maximixar(id) {
 
-      for (let i; i>5; i--){
-        console.log("sugerencia impresa");
-      }
+  
+  maxgif.style.visibility = "visible";
 
-      console.log("iguala variables");
-      ultima_busqueda = barra_busqueda.value
+}
 
+function eliminar_lista_sugerencias() {
+
+  while (sugerencias_lista.hasChildNodes()) {  
+    sugerencias_lista.removeChild(sugerencias_lista.firstChild);
   }
 
 }
 
-function resultado_vacio(estado) {
+function crear_sugerencias(name) {
+    let cadena = `
+    <li class="sugerencia_item"><img src="./assets/icon-search.svg" class="lupa"/>${name}</li>
+    `;
 
-  sin_resultados.style.visibility = estado;
+    //DOM Buscar ubicacion para crear los elementos
+    let elemento = document.createElement('li');
+    elemento.setAttribute('class', 'xxx');
+    document.querySelector('#sugerencias_lista').appendChild(elemento);
+    let x = document.querySelector('.xxx');
+    x.outerHTML = cadena;
+
+}
+
+function eliminar_lista_resultado() {
+
+  //Eliminando todos los hijos de un elemento
+  while (contenedor_resultado.hasChildNodes()) {  
+    contenedor_resultado.removeChild(contenedor_resultado.firstChild);
+  }
+
+}
+
+function busqueda_sugerencia() {
+
+  if (sugerencias_lista.childElementCount > 0) {
+
+    const boton = document.querySelectorAll('.sugerencia_item');
+
+    boton.forEach(function (item) {
+
+      item.addEventListener('click', function 
+      () {
+          //console.log(item.textContent);
+          eliminar_lista_resultado()
+          barra_busqueda.value = item.textContent;
+          busqueda = item.textContent;
+          buscar(item.textContent, limit, offset);
+
+      });
+
+    });
+
+  }
 
 }

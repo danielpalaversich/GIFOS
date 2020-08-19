@@ -31,6 +31,9 @@ let sinresultado_contenedor = document.querySelector('.sinresultado_contenedor')
 let maxgif = document.querySelector('.maxgif');
 let boton_cerrar = document.querySelector('.boton_cerrar');
 
+let resultado_datos = "";
+let posicion_maxgif = 0;
+
 
 // variagle global de contenido que busca
 var busqueda = "";
@@ -42,7 +45,6 @@ async function llamadaApi(url) {
   const resp = await fetch(url);
   const data = await resp.json();
   return data
-  // console.log(data); //mostrar lo obtenido en consola
 }
 
 function buscar(q,limit,offset){
@@ -55,6 +57,9 @@ function buscar(q,limit,offset){
 
     let info = llamadaApi(url);
     info.then(data => {
+
+        console.log(resultado_datos = data);
+        posicion_maxgif = 0
         
         // console.log(data.data[0]);
         // console.log(data.pagination.count);
@@ -70,7 +75,8 @@ function buscar(q,limit,offset){
             data.data[i].username,
             data.data[i].title,
             data.data[i].id,
-            data.data[i].images.original.url
+            data.data[i].images.original.url,
+            i
             );
           }
 
@@ -184,7 +190,8 @@ function trending(q,limit,offset){
             data.data[i].username,
             data.data[i].title,
             data.data[i].id,
-            data.data[i].images.original.url
+            data.data[i].images.original.url,
+            i
             );
           }
 
@@ -241,14 +248,14 @@ dog.then(data => {
     console.error('fetch failed', err);
 })*/
 
-function crearimg(imagen,usuario,titulo,id, original) {
+function crearimg(imagen,usuario,titulo,id, original, pos) {
     let cadena = `
     <div class='caja'>
       <img src=${imagen} class='imagen'>
       <div class='contenido'>
         <a class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
         <a href="https://i.giphy.com/media/${id}/giphy.gif" download="filename" class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
-        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-link='${original}' data-id='${id}'/></a>
+        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-link='${original}' data-id='${id}' data-pos=${pos} ></a>
         <h6>${usuario}</h6>
         <h5>${titulo}</h5>
       </div>
@@ -305,6 +312,8 @@ ver_mas.addEventListener('click', ()=>{
 boton_cerrar.addEventListener('click', ()=>{
     //console.log("Click boton cerrar");
     maxgif.style.visibility = "hidden";
+    imagen_maxgif.style.display = "none";
+    posicion_maxgif = 0;
 })
 
 
@@ -423,6 +432,9 @@ function busqueda_trending() {
 
 }
 
+let imagen_maxgif = document.querySelector(".imagen_maxgif");
+let loader = document.querySelector(".loader");
+
 maximixar();
 
 function maximixar() {
@@ -434,14 +446,74 @@ function maximixar() {
     item.addEventListener('click', function 
     () {
 
-        let imagen_maxgif = document.querySelector(".imagen_maxgif");
-        console.log(item.dataset.link);
-        let imagen = maxgif.dataset.link
         maxgif.style.visibility = "visible";
+        imagen_maxgif.style.display = "none";
+        loader.style.display = "block";
+
+        
+        let imagen = item.dataset.link
+        posicion_maxgif = item.dataset.pos
+        //console.log(posicion_maxgif);
+
         imagen_maxgif.setAttribute('src', imagen);
+        
+        imagen_maxgif.addEventListener("load", function(event) {
+        console.log("Imagen cargada");
+        imagen_maxgif.style.display = "inline";
+        loader.style.display = "none";
+
+        });
 
     });
 
   });
 
 }
+
+
+let flecha_left = document.querySelector(".left");
+let flecha_right = document.querySelector(".right");
+
+flecha_left.addEventListener('click', ()=>{
+
+    const boton = document.querySelectorAll('.icon_max');
+
+    if (posicion_maxgif > 0) {
+      imagen_maxgif.style.display = "none";
+      loader.style.display = "block";
+      posicion_maxgif--;
+      console.log("Flecha izq");
+      //imagen_maxgif.setAttribute('src', resultado_datos.data[posicion_maxgif].images.original.url);
+      imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
+    }else{
+      posicion_maxgif = contenedor_resultado.childElementCount - 1;
+      console.log("Devuelta al final");
+      //imagen_maxgif.setAttribute('src', resultado_datos.data[posicion_maxgif].images.original.url);
+      imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
+      imagen_maxgif.style.display = "inline";
+      loader.style.display = "none";
+    }
+
+});
+
+flecha_right.addEventListener('click', ()=>{
+
+    const boton = document.querySelectorAll('.icon_max');
+  
+    if (posicion_maxgif < contenedor_resultado.childElementCount - 1) {
+      imagen_maxgif.style.display = "none";
+      loader.style.display = "block";
+      posicion_maxgif++;
+      console.log("Flecha der");
+      //imagen_maxgif.setAttribute('src', resultado_datos.data[posicion_maxgif].images.original.url);
+      imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
+    }else{
+      posicion_maxgif = 0;
+      console.log("Devuelta al inicio");
+      //imagen_maxgif.setAttribute('src', resultado_datos.data[posicion_maxgif].images.original.url);
+      imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
+      imagen_maxgif.style.display = "inline";
+      loader.style.display = "none";
+    }
+
+});

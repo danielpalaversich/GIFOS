@@ -260,8 +260,8 @@ function crearimg(imagen,usuario,titulo,id, original, pos) {
     <div class='caja'>
       <img src=${imagen} class='imagen'>
       <div class='contenido'>
-        <a class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
-        <a onclick=descargar('${original}') class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
+        <a onclick='agregar_favoritos(${pos}, "${id}")' class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
+        <a onclick='descargar("${original}", ${pos})' class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
         <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-link='${original}' data-id='${id}' data-pos=${pos} ></a>
         <h6 class='caja_usuario'>${usuario}</h6>
         <h5 class='caja_titulo'>${titulo}</h5>
@@ -558,43 +558,74 @@ flecha_right.addEventListener('click', ()=>{
 
 });
 
+// aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
-
-
-
-function agregar_favoritos() {
-
-  const boton = document.querySelectorAll('.icon_fav');
-
-  boton.forEach(function (item) {
-
-    bd_favoritos.push(data.data[i]);
-
-  });
-
+function fav(pos, id) {
+  return bd_favoritos;
 }
 
+function myFunction() {
+  ages.find(fav);
+}
+
+// aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+function agregar_favoritos(pos, id) {
+
+  const icon_fav = document.querySelectorAll('.icon_fav');
+  icon_fav[pos].addEventListener('click', fav(pos));
+
+  function fav (pos, id) {
+
+    if (fav == true) {
+
+      console.log("Ok! ")
+
+      bd_favoritos.push(bd[pos]);
+      icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
+      console.log("fav agregado");
+
+    }else if (fav == undefined){
+
+      icon_fav[pos].setAttribute("src", "./assets/icon-fav-hover.svg")
+
+      function removeItemFromArr ( arr, item ) {
+        var i = arr.indexOf( item );
+     
+        if ( i !== -1 ) {
+            arr.splice( i, 1 );
+        }
+      }
+         
+      removeItemFromArr( bd_favoritos, id );
+      console.log("fav eliminado");
+
+    }
+
+  };
+
+};
 
 // ------------------------------ DESCARGAR DE GIF ------------------------------ 
 
-function descargar(enlace) {
+function descargar(enlace, pos) {
 
   const boton = document.querySelectorAll('.icon_download');
+  boton[pos].addEventListener('click', des(enlace));
 
-  boton.forEach(function (item) {
+  function des (enlace) {
 
-    item.addEventListener("click", () =>{
-      var x=new XMLHttpRequest();
-      x.open("GET", enlace, true);
-      x.responseType = 'blob';
-      x.onload=function(e){download(x.response, "descarga.gif", "image/gif" ); }
-      x.send();
-    });
+    var x=new XMLHttpRequest();
+    x.open("GET", enlace, true);
+    x.responseType = 'blob';
+    x.onload=function(e){download(x.response, "descarga.gif", "image/gif" ); }
+    x.send();
 
-  });
+  };
 
-  //boton.removeEventListener("click", descargar(), true); // no entiendo como hacerlo funcionar
-}
+};
+
+//boton.removeEventListener("click", descargar(), true); // no entiendo como hacerlo funcionar
 
 function download(data, strFileName, strMimeType) {
     var self = window, // this script is only for browsers anyway...

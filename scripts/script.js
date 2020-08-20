@@ -31,8 +31,10 @@ let sinresultado_contenedor = document.querySelector('.sinresultado_contenedor')
 let maxgif = document.querySelector('.maxgif');
 let boton_cerrar = document.querySelector('.boton_cerrar');
 
-let resultado_datos = "";
 let posicion_maxgif = 0;
+let bd = []; 
+
+let bd_favoritos = []; 
 
 
 // variagle global de contenido que busca
@@ -58,7 +60,7 @@ function buscar(q,limit,offset){
     let info = llamadaApi(url);
     info.then(data => {
 
-        console.log(resultado_datos = data);
+        //console.log(data);
         posicion_maxgif = 0
         
         // console.log(data.data[0]);
@@ -70,15 +72,18 @@ function buscar(q,limit,offset){
 
           for (var i = 0; i < cantidad; i++) {
 
+            bd.push(data.data[i]);
+
             crearimg(
             data.data[i].images.preview_gif.url,
             data.data[i].username,
             data.data[i].title,
             data.data[i].id,
             data.data[i].images.original.url,
-            i
+            bd.length - 1
             );
           }
+
 
           maximixar();
 
@@ -185,13 +190,15 @@ function trending(q,limit,offset){
 
           for (var i = 0; i < cantidad; i++) {
 
+            bd.push(data.data[i]);
+
             crearimg(
             data.data[i].images.preview_gif.url,
             data.data[i].username,
             data.data[i].title,
             data.data[i].id,
             data.data[i].images.original.url,
-            i
+            bd.length - 1
             );
           }
 
@@ -254,10 +261,10 @@ function crearimg(imagen,usuario,titulo,id, original, pos) {
       <img src=${imagen} class='imagen'>
       <div class='contenido'>
         <a class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
-        <a href="https://i.giphy.com/media/${id}/giphy.gif" download="filename" class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
+        <a onclick=descargar('${original}') class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
         <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-link='${original}' data-id='${id}' data-pos=${pos} ></a>
-        <h6>${usuario}</h6>
-        <h5>${titulo}</h5>
+        <h6 class='caja_usuario'>${usuario}</h6>
+        <h5 class='caja_titulo'>${titulo}</h5>
       </div>
     </div>
     `;
@@ -278,6 +285,8 @@ barra_busqueda.addEventListener('keyup', ()=> {
 
         busqueda = barra_busqueda.value;
 
+        bd = []; //vaciar la los resultados.
+
         buscar(busqueda, 12, 0);
     }
 })
@@ -287,6 +296,8 @@ if ( busqueda.length = 0 ) {
     lupa_close.addEventListener('click', ()=>{
 
     busqueda = barra_busqueda.value;
+
+    bd = []; //vaciar la los resultados.
 
     buscar(busqueda, 12, 0);
     //console.log("realizando busqueda");
@@ -330,7 +341,6 @@ barra_busqueda.addEventListener('keyup', ()=> {
     eliminar_lista_sugerencias();
   }
 })
-
 
 
 function resultado_vacio(estado) {
@@ -419,6 +429,7 @@ function busqueda_trending() {
       item.addEventListener('click', function 
       () {
           //console.log(item.textContent);
+          bd = []; //vaciar la los resultados.
           eliminar_lista_resultado()
           barra_busqueda.value = item.textContent;
           busqueda = item.textContent;
@@ -435,16 +446,24 @@ function busqueda_trending() {
 let imagen_maxgif = document.querySelector(".imagen_maxgif");
 let loader = document.querySelector(".loader");
 
+maxgif_usuario = document.querySelector(".maxgif_usuario");
+maxgif_titulo = document.querySelector(".maxgif_titulo");
+
 maximixar();
 
 function maximixar() {
 
   const boton = document.querySelectorAll('.icon_max');
+  const caja_usuario = document.querySelectorAll(".caja_usuario");
+  const caja_titulo = document.querySelectorAll(".caja_titulo");
+  //console.log(boton);
 
   boton.forEach(function (item) {
 
     item.addEventListener('click', function 
     () {
+
+        console.log("Imagen maximixada");
 
         maxgif.style.visibility = "visible";
         imagen_maxgif.style.display = "none";
@@ -456,9 +475,10 @@ function maximixar() {
         //console.log(posicion_maxgif);
 
         imagen_maxgif.setAttribute('src', imagen);
+        maxgif_usuario.textContent = caja_usuario[posicion_maxgif].textContent;
+        maxgif_titulo.textContent = caja_titulo[posicion_maxgif].textContent;
         
         imagen_maxgif.addEventListener("load", function(event) {
-        console.log("Imagen cargada");
         imagen_maxgif.style.display = "inline";
         loader.style.display = "none";
 
@@ -478,42 +498,213 @@ flecha_left.addEventListener('click', ()=>{
 
     const boton = document.querySelectorAll('.icon_max');
 
+    imagen_maxgif.style.display = "none";
+    loader.style.display = "block";
+
     if (posicion_maxgif > 0) {
-      imagen_maxgif.style.display = "none";
-      loader.style.display = "block";
       posicion_maxgif--;
       console.log("Flecha izq");
-      //imagen_maxgif.setAttribute('src', resultado_datos.data[posicion_maxgif].images.original.url);
-      imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
+      imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
+      maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
+      maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
+      //imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
     }else{
       posicion_maxgif = contenedor_resultado.childElementCount - 1;
       console.log("Devuelta al final");
-      //imagen_maxgif.setAttribute('src', resultado_datos.data[posicion_maxgif].images.original.url);
-      imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
+      imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
+      maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
+      maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
+      //imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
+    }
+
+    (function(){
+      imagen_maxgif.addEventListener("load", function(event) {
       imagen_maxgif.style.display = "inline";
       loader.style.display = "none";
-    }
+      });
+    }());
+
+    //  (function(){}());  funcion aninima que se ejecuta asimisma.
 
 });
 
 flecha_right.addEventListener('click', ()=>{
 
     const boton = document.querySelectorAll('.icon_max');
-  
+
+    imagen_maxgif.style.display = "none";
+    loader.style.display = "block";
+
     if (posicion_maxgif < contenedor_resultado.childElementCount - 1) {
-      imagen_maxgif.style.display = "none";
-      loader.style.display = "block";
       posicion_maxgif++;
       console.log("Flecha der");
-      //imagen_maxgif.setAttribute('src', resultado_datos.data[posicion_maxgif].images.original.url);
-      imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
+      imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
+      maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
+      maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
+      //imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
     }else{
       posicion_maxgif = 0;
       console.log("Devuelta al inicio");
-      //imagen_maxgif.setAttribute('src', resultado_datos.data[posicion_maxgif].images.original.url);
-      imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
-      imagen_maxgif.style.display = "inline";
-      loader.style.display = "none";
+      imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
+      maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
+      maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
+      //imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
     }
 
+    imagen_maxgif.addEventListener("load", function(event) {
+    imagen_maxgif.style.display = "inline";
+    loader.style.display = "none";
+    });
+
 });
+
+
+
+
+
+function agregar_favoritos() {
+
+  const boton = document.querySelectorAll('.icon_fav');
+
+  boton.forEach(function (item) {
+
+    bd_favoritos.push(data.data[i]);
+
+  });
+
+}
+
+
+// ------------------------------ DESCARGAR DE GIF ------------------------------ 
+
+function descargar(enlace) {
+
+  const boton = document.querySelectorAll('.icon_download');
+
+  boton.forEach(function (item) {
+
+    item.addEventListener("click", () =>{
+      var x=new XMLHttpRequest();
+      x.open("GET", enlace, true);
+      x.responseType = 'blob';
+      x.onload=function(e){download(x.response, "descarga.gif", "image/gif" ); }
+      x.send();
+    });
+
+  });
+
+  //boton.removeEventListener("click", descargar(), true); // no entiendo como hacerlo funcionar
+}
+
+function download(data, strFileName, strMimeType) {
+    var self = window, // this script is only for browsers anyway...
+      defaultMime = "application/octet-stream", // this default mime also triggers iframe downloads
+      mimeType = strMimeType || defaultMime,
+      payload = data,
+      url = !strFileName && !strMimeType && payload,
+      anchor = document.createElement("a"),
+      toString = function(a){return String(a);},
+      myBlob = (self.Blob || self.MozBlob || self.WebKitBlob || toString),
+      fileName = strFileName || "download",
+      blob,
+      reader;
+      myBlob= myBlob.call ? myBlob.bind(self) : Blob ;
+    if(String(this)==="true"){ //reverse arguments, allowing download.bind(true, "text/xml", "export.xml") to act as a callback
+      payload=[payload, mimeType];
+      mimeType=payload[0];
+      payload=payload[1];
+    }
+    if(url && url.length< 2048){ // if no filename and no mime, assume a url was passed as the only argument
+      fileName = url.split("/").pop().split("?")[0];
+      anchor.href = url; // assign href prop to temp anchor
+        if(anchor.href.indexOf(url) !== -1){ // if the browser determines that it's a potentially valid url path:
+            var ajax=new XMLHttpRequest();
+            ajax.open( "GET", url, true);
+            ajax.responseType = 'blob';
+            ajax.onload= function(e){ 
+          download(e.target.response, fileName, defaultMime);
+        };
+            setTimeout(function(){ ajax.send();}, 0); // allows setting custom ajax headers using the return:
+          return ajax;
+      } // end if valid url?
+    } // end if url?
+    //go ahead and download dataURLs right away
+    if(/^data\:[\w+\-]+\/[\w+\-]+[,;]/.test(payload)){
+      if(payload.length > (1024*1024*1.999) && myBlob !== toString ){
+        payload=dataUrlToBlob(payload);
+        mimeType=payload.type || defaultMime;
+      }else{      
+        return navigator.msSaveBlob ?  // IE10 can't do a[download], only Blobs:
+          navigator.msSaveBlob(dataUrlToBlob(payload), fileName) :
+          saver(payload) ; // everyone else can save dataURLs un-processed
+      }
+    }//end if dataURL passed?
+    blob = payload instanceof myBlob ?
+      payload :
+      new myBlob([payload], {type: mimeType}) ;
+    function dataUrlToBlob(strUrl) {
+      var parts= strUrl.split(/[:;,]/),
+      type= parts[1],
+      decoder= parts[2] == "base64" ? atob : decodeURIComponent,
+      binData= decoder( parts.pop() ),
+      mx= binData.length,
+      i= 0,
+      uiArr= new Uint8Array(mx);
+      for(i;i<mx;++i) uiArr[i]= binData.charCodeAt(i);
+      return new myBlob([uiArr], {type: type});
+     }
+    function saver(url, winMode){
+      if ('download' in anchor) { //html5 A[download]
+        anchor.href = url;
+        anchor.setAttribute("download", fileName);
+        anchor.className = "download-js-link";
+        anchor.innerHTML = "downloading...";
+        anchor.style.display = "none";
+        document.body.appendChild(anchor);
+        setTimeout(function() {
+          anchor.click();
+          document.body.removeChild(anchor);
+          if(winMode===true){setTimeout(function(){ self.URL.revokeObjectURL(anchor.href);}, 250 );}
+        }, 66);
+        return true;
+      }
+      // handle non-a[download] safari as best we can:
+      if(/(Version)\/(\d+)\.(\d+)(?:\.(\d+))?.*Safari\//.test(navigator.userAgent)) {
+        url=url.replace(/^data:([\w\/\-\+]+)/, defaultMime);
+        if(!window.open(url)){ // popup blocked, offer direct download:
+          if(confirm("Displaying New Document\n\nUse Save As... to download, then click back to return to this page.")){ location.href=url; }
+        }
+        return true;
+      }
+      //do iframe dataURL download (old ch+FF):
+      var f = document.createElement("iframe");
+      document.body.appendChild(f);
+      if(!winMode){ // force a mime that will download:
+        url="data:"+url.replace(/^data:([\w\/\-\+]+)/, defaultMime);
+      }
+      f.src=url;
+      setTimeout(function(){ document.body.removeChild(f); }, 333);
+    }//end saver
+    if (navigator.msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
+      return navigator.msSaveBlob(blob, fileName);
+    }
+    if(self.URL){ // simple fast and modern way using Blob and URL:
+      saver(self.URL.createObjectURL(blob), true);
+    }else{
+      // handle non-Blob()+non-URL browsers:
+      if(typeof blob === "string" || blob.constructor===toString ){
+        try{
+          return saver( "data:" +  mimeType   + ";base64,"  +  self.btoa(blob)  );
+        }catch(y){
+          return saver( "data:" +  mimeType   + "," + encodeURIComponent(blob)  );
+        }
+      }
+      // Blob but not URL support:
+      reader=new FileReader();
+      reader.onload=function(e){
+        saver(this.result);
+      };
+      reader.readAsDataURL(blob);
+    }
+    return true;
+  }; /* end download() */

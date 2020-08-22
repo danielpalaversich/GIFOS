@@ -36,6 +36,10 @@ let bd = [];
 
 let bd_favoritos = []; 
 
+let bd_trending = []; 
+let posicion_trending = 0;
+
+let ubicacion; // variables para id secciones
 
 // variagle global de contenido que busca
 var busqueda = "";
@@ -50,6 +54,9 @@ async function llamadaApi(url) {
 }
 
 function buscar(q,limit,offset){
+
+    console.log("funcion buscar");
+    console.log(offset);
 
     eliminar_lista_sugerencias();
 
@@ -80,12 +87,16 @@ function buscar(q,limit,offset){
             data.data[i].title,
             data.data[i].id,
             data.data[i].images.original.url,
-            bd.length - 1
+            bd.length - 1,
+            "resultado"
             );
+
+            comprobar_favoritos(bd.length - 1, data.data[i].id);
+
           }
 
 
-          maximixar();
+          maximixar("resultado");
 
           resultado_vacio("none")
 
@@ -108,6 +119,8 @@ function buscar(q,limit,offset){
 }
 
 function sugerencias(q){
+
+    console.log("funcion sugerencias");
 
     let ultima_busqueda = "";
 
@@ -143,6 +156,8 @@ trending_listas();
 
 function trending_listas(){
 
+    console.log("funcion trending_listas");
+
     let ultima_busqueda = "";
 
     let url = `https://api.giphy.com/v1/trending/searches?api_key=${api_key}`;
@@ -170,51 +185,42 @@ function trending_listas(){
     })
 }
 
-function trending(q,limit,offset){
+trending(6);
 
-    eliminar_lista_sugerencias();
+function trending(limit){
 
-    resultado_titulo.textContent = q;
+    console.log("funcion trending");
 
-    let url = `http://api.giphy.com/v1/gifs/search?q=${q}&api_key=${api_key}&limit=${limit}&offset=${offset}`;
+    let url = `http://api.giphy.com/v1/gifs/trending?api_key=${api_key}&limit=${limit}`;
 
     let info = llamadaApi(url);
     info.then(data => {
-        
-        // console.log(data.data[0]);
-        // console.log(data.pagination.count);
 
-        let cantidad = data.pagination.count; //cantidad de gif devuelto por el servidor
+        console.log(data);
+        posicion_trending = 0
+
+        let cantidad = 3
 
         if (cantidad > 0) {
 
           for (var i = 0; i < cantidad; i++) {
 
-            bd.push(data.data[i]);
-
             crearimg(
-            data.data[i].images.preview_gif.url,
-            data.data[i].username,
-            data.data[i].title,
-            data.data[i].id,
-            data.data[i].images.original.url,
-            bd.length - 1
+              data.data[i].images.preview_gif.url,
+              data.data[i].username,
+              data.data[i].title,
+              data.data[i].id,
+              data.data[i].images.original.url,
+              (bd_trending.length),
+              "trending"
             );
+
+            bd_trending.push(data.data[i]);
+
+            comprobar_favoritos((bd_trending.length), data.data[i].id);
           }
 
-          resultado_vacio("none")
-
-          if (cantidad < 12) {
-            ver_mas.style.display = "none";
-          } else {
-            ver_mas.style.display = "inline";
-          }
-
-        } else {
-
-          resultado_vacio("inline");
-          ver_mas.style.display = "none";
-
+          maximixar("trending");
         }
 
     }).catch(error => {
@@ -255,24 +261,33 @@ dog.then(data => {
     console.error('fetch failed', err);
 })*/
 
-function crearimg(imagen,usuario,titulo,id, original, pos) {
+function crearimg(imagen,usuario,titulo,id,original,pos,seccion) {
     let cadena = `
     <div class='caja'>
       <img src=${imagen} class='imagen'>
       <div class='contenido'>
         <a onclick='agregar_favoritos(${pos}, "${id}")' class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
         <a onclick='descargar("${original}", ${pos})' class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
-        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-link='${original}' data-id='${id}' data-pos=${pos} ></a>
+        <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-seccion='${seccion}' data-link='${original}' data-id='${id}' data-pos=${pos} ></a>
         <h6 class='caja_usuario'>${usuario}</h6>
         <h5 class='caja_titulo'>${titulo}</h5>
       </div>
     </div>
     `;
 
+    if (seccion == "resultado") {
+
+      ubicacion = '#contenedor_resultado';
+
+    } else if (seccion == "trending") {
+
+      ubicacion = '#contenedor_trending';
+
+    }
     //DOM Buscar ubicacion para crear los elementos
     let elemento = document.createElement('DIV');
     elemento.setAttribute('class', 'xxx');
-    document.querySelector('#contenedor_resultado').appendChild(elemento);
+    document.querySelector(ubicacion).appendChild(elemento);
     let x = document.querySelector('.xxx');
     x.outerHTML = cadena;
 }
@@ -430,6 +445,7 @@ function busqueda_trending() {
       () {
           //console.log(item.textContent);
           bd = []; //vaciar la los resultados.
+          offset= 0;
           eliminar_lista_resultado()
           barra_busqueda.value = item.textContent;
           busqueda = item.textContent;
@@ -449,7 +465,7 @@ let loader = document.querySelector(".loader");
 maxgif_usuario = document.querySelector(".maxgif_usuario");
 maxgif_titulo = document.querySelector(".maxgif_titulo");
 
-maximixar();
+maximixar("");
 
 function maximixar() {
 
@@ -463,21 +479,33 @@ function maximixar() {
     item.addEventListener('click', function 
     () {
 
-        console.log("Imagen maximixada");
+        //console.log("Imagen maximixada");
 
         maxgif.style.visibility = "visible";
         imagen_maxgif.style.display = "none";
         loader.style.display = "block";
 
-        
-        let imagen = item.dataset.link
+        seccion = item.dataset.seccion;
         posicion_maxgif = item.dataset.pos
-        //console.log(posicion_maxgif);
 
-        imagen_maxgif.setAttribute('src', imagen);
-        maxgif_usuario.textContent = caja_usuario[posicion_maxgif].textContent;
-        maxgif_titulo.textContent = caja_titulo[posicion_maxgif].textContent;
-        
+        if (seccion == "resultado") {
+
+          //console.log("Imagen resultado");
+
+          imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
+          maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
+          maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
+
+        } else if (seccion == "trending") {
+
+          //console.log("Imagen trending");
+
+          imagen_maxgif.setAttribute('src', bd_trending[posicion_maxgif].images.original.url);
+          maxgif_usuario.textContent = bd_trending[posicion_maxgif].username || "sin nombre";
+          maxgif_titulo.textContent = bd_trending[posicion_maxgif].title || "sin titulo";
+
+        }
+
         imagen_maxgif.addEventListener("load", function(event) {
         imagen_maxgif.style.display = "inline";
         loader.style.display = "none";
@@ -558,20 +586,6 @@ flecha_right.addEventListener('click', ()=>{
 
 });
 
-// aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
-function buscador_nombre(valor) {
-
-  resultado = bd.find((elemento) => {
-      return elemento.id === valor;
-  });
-
-  return resultado //guardar datos del usuario activo
-
-}
-
-// aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
 function agregar_favoritos(pos, id) {
 
   const icon_fav = document.querySelectorAll('.icon_fav');
@@ -584,7 +598,7 @@ function agregar_favoritos(pos, id) {
 
     bd_favoritos.push(bd[pos]);
     icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
-    console.log("fav agregado");
+    //console.log("fav agregado");
 
   } else {
 
@@ -598,8 +612,24 @@ function agregar_favoritos(pos, id) {
     }
 
     eliminar_id(id); // ELIMINA OBJETO Y DEVUELVE EL ARRAY
-    console.log("fav eliminado");
+    //console.log("fav eliminado");
 
+  }
+
+}
+
+function comprobar_favoritos(pos, id) {
+
+  const icon_fav = document.querySelectorAll('.icon_fav');
+
+  resultado = bd_favoritos.find((elemento) => {
+      return elemento.id === id;
+  });
+
+  if ( resultado ) {
+
+    icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
+    //console.log("fav agregado");
   }
 
 }

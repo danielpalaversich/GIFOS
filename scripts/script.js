@@ -560,12 +560,14 @@ flecha_right.addEventListener('click', ()=>{
 
 // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
-function fav(pos, id) {
-  return bd_favoritos;
-}
+function buscador_nombre(valor) {
 
-function myFunction() {
-  ages.find(fav);
+  resultado = bd.find((elemento) => {
+      return elemento.id === valor;
+  });
+
+  return resultado //guardar datos del usuario activo
+
 }
 
 // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -573,38 +575,34 @@ function myFunction() {
 function agregar_favoritos(pos, id) {
 
   const icon_fav = document.querySelectorAll('.icon_fav');
-  icon_fav[pos].addEventListener('click', fav(pos));
 
-  function fav (pos, id) {
+  resultado = bd_favoritos.find((elemento) => {
+      return elemento.id === id;
+  });
 
-    if (fav == true) {
+  if (resultado === undefined ) {
 
-      console.log("Ok! ")
+    bd_favoritos.push(bd[pos]);
+    icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
+    console.log("fav agregado");
 
-      bd_favoritos.push(bd[pos]);
-      icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
-      console.log("fav agregado");
+  } else {
 
-    }else if (fav == undefined){
+    icon_fav[pos].setAttribute("src", "./assets/icon-fav-hover.svg")
 
-      icon_fav[pos].setAttribute("src", "./assets/icon-fav-hover.svg")
-
-      function removeItemFromArr ( arr, item ) {
-        var i = arr.indexOf( item );
-     
-        if ( i !== -1 ) {
-            arr.splice( i, 1 );
-        }
-      }
-         
-      removeItemFromArr( bd_favoritos, id );
-      console.log("fav eliminado");
-
+    function eliminar_id(id) {
+      let index = bd_favoritos.findIndex(elemento => {
+        return elemento.id === id;
+      });
+      bd_favoritos.splice(index,1);
     }
 
-  };
+    eliminar_id(id); // ELIMINA OBJETO Y DEVUELVE EL ARRAY
+    console.log("fav eliminado");
 
-};
+  }
+
+}
 
 // ------------------------------ DESCARGAR DE GIF ------------------------------ 
 

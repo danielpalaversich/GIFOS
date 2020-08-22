@@ -41,6 +41,8 @@ let posicion_trending = 0;
 
 let ubicacion; // variables para id secciones
 
+let seccion_actual;
+
 // variagle global de contenido que busca
 var busqueda = "";
 let limit = 12; //cantidad de gif solicitados al servidor
@@ -459,13 +461,105 @@ function busqueda_trending() {
 
 }
 
+function maximixar_propiedades(seccion, posicion) {
+
+  if (seccion == "resultado") {
+
+    console.log("Imagen resultado");
+
+    imagen_maxgif.setAttribute('src', bd[posicion].images.original.url);
+    maxgif_usuario.textContent = bd[posicion].username || "sin nombre";
+    maxgif_titulo.textContent = bd[posicion].title || "sin titulo";
+
+
+  } else if (seccion == "trending") {
+
+    console.log("Imagen trending");
+
+    imagen_maxgif.setAttribute('src', bd_trending[posicion].images.original.url);
+    maxgif_usuario.textContent = bd_trending[posicion].username || "sin nombre";
+    maxgif_titulo.textContent = bd_trending[posicion].title || "sin titulo";
+
+  }
+
+}
+
+function maximixar_flecha_izq(seccion, posicion) {
+
+  if (seccion == "resultado") {
+
+    contenedor = contenedor_resultado.childElementCount;
+
+  } else if (seccion == "trending") {
+
+    contenedor = contenedor_trending.childElementCount;
+
+  }
+
+  const boton = document.querySelectorAll('.icon_max');
+
+  imagen_maxgif.style.display = "none";
+  loader.style.display = "block";
+
+  if (posicion_maxgif > 0) {
+    posicion_maxgif--;
+    console.log("Flecha izq");
+    maximixar_propiedades(seccion, posicion_maxgif);
+  }else{
+    posicion_maxgif = contenedor - 1;
+    console.log("Devuelta al final");
+    maximixar_propiedades(seccion, posicion_maxgif);
+  }
+
+  imagen_maxgif.addEventListener("load", function(event) {
+  imagen_maxgif.style.display = "inline";
+  loader.style.display = "none";
+  });
+
+}
+
+
+function maximixar_flecha_der(seccion, posicion) {
+
+  if (seccion == "resultado") {
+
+    contenedor = contenedor_resultado.childElementCount;
+
+  } else if (seccion == "trending") {
+
+    contenedor = contenedor_trending.childElementCount;
+
+  }
+
+  const boton = document.querySelectorAll('.icon_max');
+
+  imagen_maxgif.style.display = "none";
+  loader.style.display = "block";
+
+  if (posicion_maxgif < contenedor - 1) {
+    posicion_maxgif++;
+    console.log("Flecha der");
+    maximixar_propiedades(seccion, posicion_maxgif);
+  }else{
+    posicion_maxgif = 0;
+    console.log("Devuelta al inicio");
+    maximixar_propiedades(seccion, posicion_maxgif);
+  }
+
+  imagen_maxgif.addEventListener("load", function(event) {
+  imagen_maxgif.style.display = "inline";
+  loader.style.display = "none";
+  });
+
+}
+
 let imagen_maxgif = document.querySelector(".imagen_maxgif");
 let loader = document.querySelector(".loader");
 
 maxgif_usuario = document.querySelector(".maxgif_usuario");
 maxgif_titulo = document.querySelector(".maxgif_titulo");
 
-maximixar("");
+maximixar();
 
 function maximixar() {
 
@@ -485,24 +579,15 @@ function maximixar() {
         imagen_maxgif.style.display = "none";
         loader.style.display = "block";
 
-        seccion = item.dataset.seccion;
-        posicion_maxgif = item.dataset.pos
+        seccion_actual = item.dataset.seccion;
 
-        if (seccion == "resultado") {
+        if (seccion_actual == "resultado") {
 
-          //console.log("Imagen resultado");
+          maximixar_propiedades("resultado", item.dataset.pos);
 
-          imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
-          maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
-          maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
+        } else if (seccion_actual == "trending") {
 
-        } else if (seccion == "trending") {
-
-          //console.log("Imagen trending");
-
-          imagen_maxgif.setAttribute('src', bd_trending[posicion_maxgif].images.original.url);
-          maxgif_usuario.textContent = bd_trending[posicion_maxgif].username || "sin nombre";
-          maxgif_titulo.textContent = bd_trending[posicion_maxgif].title || "sin titulo";
+          maximixar_propiedades("trending", item.dataset.pos);
 
         }
 
@@ -524,65 +609,13 @@ let flecha_right = document.querySelector(".right");
 
 flecha_left.addEventListener('click', ()=>{
 
-    const boton = document.querySelectorAll('.icon_max');
-
-    imagen_maxgif.style.display = "none";
-    loader.style.display = "block";
-
-    if (posicion_maxgif > 0) {
-      posicion_maxgif--;
-      console.log("Flecha izq");
-      imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
-      maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
-      maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
-      //imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
-    }else{
-      posicion_maxgif = contenedor_resultado.childElementCount - 1;
-      console.log("Devuelta al final");
-      imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
-      maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
-      maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
-      //imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
-    }
-
-    (function(){
-      imagen_maxgif.addEventListener("load", function(event) {
-      imagen_maxgif.style.display = "inline";
-      loader.style.display = "none";
-      });
-    }());
-
-    //  (function(){}());  funcion aninima que se ejecuta asimisma.
+  maximixar_flecha_izq(seccion_actual, posicion_maxgif)
 
 });
 
 flecha_right.addEventListener('click', ()=>{
 
-    const boton = document.querySelectorAll('.icon_max');
-
-    imagen_maxgif.style.display = "none";
-    loader.style.display = "block";
-
-    if (posicion_maxgif < contenedor_resultado.childElementCount - 1) {
-      posicion_maxgif++;
-      console.log("Flecha der");
-      imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
-      maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
-      maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
-      //imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
-    }else{
-      posicion_maxgif = 0;
-      console.log("Devuelta al inicio");
-      imagen_maxgif.setAttribute('src', bd[posicion_maxgif].images.original.url);
-      maxgif_usuario.textContent = bd[posicion_maxgif].username || "sin nombre";
-      maxgif_titulo.textContent = bd[posicion_maxgif].title || "sin titulo";
-      //imagen_maxgif.setAttribute('src', boton[posicion_maxgif].dataset.link);
-    }
-
-    imagen_maxgif.addEventListener("load", function(event) {
-    imagen_maxgif.style.display = "inline";
-    loader.style.display = "none";
-    });
+  maximixar_flecha_der(seccion_actual, posicion_maxgif)
 
 });
 

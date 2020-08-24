@@ -1,136 +1,116 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<title>PROYECTO GIFOS - ACAMICA</title>
-	<link rel="stylesheet" href="styles/style.css">
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>PROYECTO GIFOS - ACAMICA</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <!--<script src="https://kit.fontawesome.com/2095ce4bec.js" crossorigin="anonymous"></script>-->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
 </head>
 <body>
 
-	<!-- +++++++++++++++++++++++++++  HEADER  +++++++++++++++++++++++++++ -->
+    <!-- +++++++++++++++++++++++++++ SECCION maxgif +++++++++++++++++++++++++++ -->
+
+  <div class="seccion maxgif"> 
+      <img src="./assets/button-left.svg" class="flechas left_maxgifos"/>
+      <div>
+        <img src="https://picsum.photos/695/385" class="imagen_maxgif">
+        <div class="loader">
+          <img src="./assets/loader.svg" class="img_loader"/>
+        </div>
+        <div class="contenedor">
+          <h6 class="maxgif_usuario">User</h6>
+        <h5 class="maxgif_titulo">Titulo GIFO</h5>
+        <a href="#" class="icono">
+          <img src="./assets/icon-fav-hover.svg" class="boton"/>
+          </a>
+          <a href="#" class="icono">
+          <img src="./assets/icon-download.svg" class="boton"/>
+          </a>
+        </div>
+      </div>
+      <img src="./assets/button-right.svg" class="flechas right_maxgifos"/>
+      <img src="./assets/button-close.svg" class="boton_cerrar"/>
+    </div>
+
+  <!-- +++++++++++++++++++++++++++  HEADER  +++++++++++++++++++++++++++ -->
 
     <header>
-    	<a href="index.html" tabindex="0">
-           	<img src="assets/logo-desktop.svg" alt="logo" class="logo"/>
+      <a href="index.html" tabindex="0">
+            <img src="./assets/logo-desktop.svg" alt="logo" class="logo"/>
         </a>
         <nav>
             <div class="menu">
                 <!-- <input type="checkbox" id="checkbox" /> -->
-				<i class="fas fa-bars"></i>
+        <i class="fas fa-bars"></i>
                 <ul class="ul">
                     <li><a href="" tabindex="1">MODO NOCTURNO</a></li>
                     <li><a href="favoritos.html" tabindex="2">FAVORITOS</a></li>
                     <li><a href="misgifos.html" tabindex="3">MIS GIFOS</a></li>
                     <li><a href="creargif.html" tabindex="4">
-                    		<img src="assets/button-crear-gifo.svg" alt="crear" class="crear"/>
-                    	</a>
+                        <img src="./assets/button-crear-gifo.svg" alt="crear" class="crear"/>
+                      </a>
                     </li>
                 </ul>
             </div>
         </nav>    
     </header>
 
-	<!-- +++++++++++++++++++++++++++ SECCION favoritos +++++++++++++++++++++++++++ -->
+  <!-- +++++++++++++++++++++++++++ SECCION resultado-busqueda +++++++++++++++++++++++++++ -->
 
-	<div class="seccion favoritos-misgifos">
-		<div>
-			<img src="assets/icon-favoritos.svg" alt="favoritos" class="favoritos"/>
-		</div>
-
-		<div>
-			<h3>Favoritos</h3>
-		</div>
-
-		<div class="contenedor">
+  <div class="seccion resultado-busqueda">
+    <div>
+      <img src="assets/icon-favoritos.svg" alt="favoritos" class="favoritos"/>
     </div>
-    <button class="boton">VER MÁS</button>
-	</div>
 
+    <div>
+      <h3>Favoritos</h3>
+    </div>
+<!--     <div>
+      <h3 id="resultado_titulo"></h3>
+    </div> -->
+    <div id="contenedor_resultado">
+    </div>
+    <button id="ver_mas" class="boton" style="display: none;" >VER MÁS</button>
+  </div>
+
+  <div class="seccion sinresultado_contenedor" style="display: none;">
+    <img src='./assets/icon-busqueda-sin-resultado.svg' class='sinresultado_item'/>
+    <p>Intenta con otra búsqueda.</p>
+  </div>
 
   <!-- +++++++++++++++++++++++++++ SECCION trending +++++++++++++++++++++++++++ -->
 
   <div class="seccion trending"> 
     <div>
       <h3>Trending GIFOS</h3>
-    </div>
-    <div>
       <p>Mira los últimos GIFO de nuestra comunidad.</p>
     </div>
 
-    <div class="contenedor">
-      <img src="assets/button-left.svg" class="flechas"/>
-      <div class="caja">
-          <img src="https://picsum.photos/260/200" alt="Avatar" class="imagen">
-          <div class="overlay">
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-fav-hover.svg" class="xx"/>
-            </a>
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-download.svg" class="xx"/>
-            </a>
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-max.svg" class="xx"/>
-            </a>
-            <h6>User</h6>
-          <h5>Titulo GIFO</h5>
-        </div>
-        </div>
-      <div class="caja">
-          <img src="https://picsum.photos/260/200" alt="Avatar" class="imagen">
-          <div class="overlay">
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-fav-hover.svg" class="xx"/>
-            </a>
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-download.svg" class="xx"/>
-            </a>
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-max.svg" class="xx"/>
-            </a>
-            <h6>User</h6>
-          <h5>Titulo GIFO</h5>
-        </div>
-        </div>
-      <div class="caja">
-          <img src="https://picsum.photos/260/200" alt="Avatar" class="imagen">
-          <div class="overlay">
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-fav-hover.svg" class="xx"/>
-            </a>
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-download.svg" class="xx"/>
-            </a>
-            <a href="#" class="icono" title="User Profile">
-            <img src="assets/icon-max.svg" class="xx"/>
-            </a>
-            <h6>User</h6>
-          <h5>Titulo GIFO</h5>
-        </div>
-        </div>
-        <img src="assets/button-right.svg" class="flechas"/>
+    <div class="contenedor" id="contenedor_trending" >
     </div>
   </div>
 
   <!-- +++++++++++++++++++++++++++  FOOTER  +++++++++++++++++++++++++++ -->
 
-	<footer>
-		<div class="contenedor">
-			<div class="social">
-				<p>Compartir en:</p>
-				<a href="https://www.spotify.com/ar/"> <i class="fab fa-spotify"></i> </a>
-				<a href="https://www.instagram.com"> <i class="fab fa-instagram"></i> </a>
-				<a href="https://www.twitter.com"> <i class="fab fa-twitter"></i> </a>
-				<a href="https://www.facebook.com"> <i class="fab fa-facebook"></i> </a>
-				<a href="https://www.telegram.org"> <i class="fab fa-telegram"></i> </a>
-			</div>
-			<p>© GIFOS 2020 All Rights Reserved.</p>
-		</div>
-	</footer>
+  <footer>
+    <div class="contenedor">
+      <div class="social">
+        <p>Compartir en:</p>
+        <a href="https://www.facebook.com"> <i class="fab fa-facebook"></i> </a>
+        <a href="https://www.twitter.com"> <i class="fab fa-twitter"></i> </a>
+        <a href="https://www.instagram.com"> <i class="fab fa-instagram"></i> </a>
+      </div>
+      <p>© GIFOS 2020 All Rights Reserved.</p>
+    </div>
+  </footer>
+
     
-    <script src="scripts/script.js"></script> 
+    <script src="./scripts/script.js"></script> 
+
+
 
 </body>
 </html>

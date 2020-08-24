@@ -3,14 +3,7 @@
 // ------------------------------ COMENTARIOS ------------------------------
 
 - Objeto y constructor para los resultados
-- Usar una sola llamada para el servidor con fecth
 - Guardar en el Localstorage
-
-
-
-
-
-- Como detectar segun lo escrito la llamada de sugerencias
 
 // ------------------------------ SOLICITUD DE GIF ------------------------------ 
 */
@@ -30,8 +23,8 @@ let sinresultado_contenedor = document.querySelector('.sinresultado_contenedor')
 //seccion maxgif
 let maxgif = document.querySelector('.maxgif');
 let boton_cerrar = document.querySelector('.boton_cerrar');
-
 let posicion_maxgif = 0;
+
 let bd = []; 
 
 let bd_favoritos = []; 
@@ -187,9 +180,9 @@ function trending_listas(){
     })
 }
 
-trending(6);
+trending(6, 0);
 
-function trending(limit){
+function trending(limit, pos){
 
     console.log("funcion trending");
 
@@ -198,29 +191,54 @@ function trending(limit){
     let info = llamadaApi(url);
     info.then(data => {
 
-        console.log(data);
-        posicion_trending = 0
+        let cantidad = 6
+        bd_trending = [];
 
-        let cantidad = 3
+        cadena = `
+        <img src="./assets/button-left.svg" class="flechas left_trending"/>
+        `;
+
+        let elemento = document.createElement('DIV');
+        elemento.setAttribute('class', 'xxx');
+        document.querySelector('#contenedor_trending').appendChild(elemento);
+        let x = document.querySelector('.xxx');
+        x.outerHTML = cadena;
 
         if (cantidad > 0) {
 
-          for (var i = 0; i < cantidad; i++) {
+          for (var i = 0 + pos; i < cantidad; i++) {
 
-            crearimg(
-              data.data[i].images.preview_gif.url,
-              data.data[i].username,
-              data.data[i].title,
-              data.data[i].id,
-              data.data[i].images.original.url,
-              (bd_trending.length),
-              "trending"
-            );
+            if (i < 3 + pos) {
+
+              crearimg(
+                data.data[i].images.preview_gif.url,
+                data.data[i].username,
+                data.data[i].title,
+                data.data[i].id,
+                data.data[i].images.original.url,
+                (bd_trending.length),
+                "trending"
+              );
+
+              comprobar_favoritos((bd_trending.length), data.data[i].id);
+
+            }
 
             bd_trending.push(data.data[i]);
 
-            comprobar_favoritos((bd_trending.length), data.data[i].id);
           }
+
+          cadena = `
+          <img src="./assets/button-right.svg" class="flechas right_trending"/>
+          `;
+
+          let elemento = document.createElement('DIV');
+          elemento.setAttribute('class', 'xxx');
+          document.querySelector('#contenedor_trending').appendChild(elemento);
+          let x = document.querySelector('.xxx');
+          x.outerHTML = cadena;
+
+          flechas_trending();
 
           maximixar("trending");
         }
@@ -268,7 +286,7 @@ function crearimg(imagen,usuario,titulo,id,original,pos,seccion) {
     <div class='caja'>
       <img src=${imagen} class='imagen'>
       <div class='contenido'>
-        <a onclick='agregar_favoritos(${pos}, "${id}")' class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
+        <a onclick='agregar_favoritos(${pos}, "${id}", "${seccion}")' class='icono'><img src='./assets/icon-fav-hover.svg' class='icon_fav'/></a>
         <a onclick='descargar("${original}", ${pos})' class='icono'><img src='./assets/icon-download.svg' class='icon_download'/></a>
         <a class='icono'><img src='./assets/icon-max.svg' class='icon_max' data-seccion='${seccion}' data-link='${original}' data-id='${id}' data-pos=${pos} ></a>
         <h6 class='caja_usuario'>${usuario}</h6>
@@ -484,74 +502,7 @@ function maximixar_propiedades(seccion, posicion) {
 
 }
 
-function maximixar_flecha_izq(seccion, posicion) {
 
-  if (seccion == "resultado") {
-
-    contenedor = contenedor_resultado.childElementCount;
-
-  } else if (seccion == "trending") {
-
-    contenedor = contenedor_trending.childElementCount;
-
-  }
-
-  const boton = document.querySelectorAll('.icon_max');
-
-  imagen_maxgif.style.display = "none";
-  loader.style.display = "block";
-
-  if (posicion_maxgif > 0) {
-    posicion_maxgif--;
-    console.log("Flecha izq");
-    maximixar_propiedades(seccion, posicion_maxgif);
-  }else{
-    posicion_maxgif = contenedor - 1;
-    console.log("Devuelta al final");
-    maximixar_propiedades(seccion, posicion_maxgif);
-  }
-
-  imagen_maxgif.addEventListener("load", function(event) {
-  imagen_maxgif.style.display = "inline";
-  loader.style.display = "none";
-  });
-
-}
-
-
-function maximixar_flecha_der(seccion, posicion) {
-
-  if (seccion == "resultado") {
-
-    contenedor = contenedor_resultado.childElementCount;
-
-  } else if (seccion == "trending") {
-
-    contenedor = contenedor_trending.childElementCount;
-
-  }
-
-  const boton = document.querySelectorAll('.icon_max');
-
-  imagen_maxgif.style.display = "none";
-  loader.style.display = "block";
-
-  if (posicion_maxgif < contenedor - 1) {
-    posicion_maxgif++;
-    console.log("Flecha der");
-    maximixar_propiedades(seccion, posicion_maxgif);
-  }else{
-    posicion_maxgif = 0;
-    console.log("Devuelta al inicio");
-    maximixar_propiedades(seccion, posicion_maxgif);
-  }
-
-  imagen_maxgif.addEventListener("load", function(event) {
-  imagen_maxgif.style.display = "inline";
-  loader.style.display = "none";
-  });
-
-}
 
 let imagen_maxgif = document.querySelector(".imagen_maxgif");
 let loader = document.querySelector(".loader");
@@ -580,14 +531,16 @@ function maximixar() {
         loader.style.display = "block";
 
         seccion_actual = item.dataset.seccion;
+        posicion_maxgif = item.dataset.pos;
+        posicion_trending = item.dataset.pos;
 
         if (seccion_actual == "resultado") {
 
-          maximixar_propiedades("resultado", item.dataset.pos);
+          maximixar_propiedades("resultado", posicion_maxgif);
 
         } else if (seccion_actual == "trending") {
 
-          maximixar_propiedades("trending", item.dataset.pos);
+          maximixar_propiedades("trending", posicion_maxgif);
 
         }
 
@@ -603,23 +556,137 @@ function maximixar() {
 
 }
 
+//////////////////////////////////////////////////
 
-let flecha_left = document.querySelector(".left");
-let flecha_right = document.querySelector(".right");
+// FLECHAS SECCION MAXGIFOS
 
-flecha_left.addEventListener('click', ()=>{
+let flecha_maxgifos_left = document.querySelector(".left_maxgifos");
+let flecha_maxgifos_right = document.querySelector(".right_maxgifos");
+
+flecha_maxgifos_left.addEventListener('click', ()=>{
 
   maximixar_flecha_izq(seccion_actual, posicion_maxgif)
 
 });
 
-flecha_right.addEventListener('click', ()=>{
+flecha_maxgifos_right.addEventListener('click', ()=>{
 
   maximixar_flecha_der(seccion_actual, posicion_maxgif)
 
 });
 
-function agregar_favoritos(pos, id) {
+function maximixar_flecha_izq(seccion, posicion) {
+
+  if (seccion == "resultado") {
+
+    contenedor = contenedor_resultado.childElementCount - 1;
+
+  } else if (seccion == "trending") {
+
+    contenedor = contenedor_trending.childElementCount;
+
+  }
+
+  const boton = document.querySelectorAll('.icon_max');
+
+  imagen_maxgif.style.display = "none";
+  loader.style.display = "block";
+
+  if (posicion_maxgif > 0) {
+    posicion_maxgif--;
+    console.log("Flecha izq");
+    maximixar_propiedades(seccion, posicion_maxgif);
+  }else{
+    posicion_maxgif = contenedor;
+    console.log("Devuelta al final");
+    maximixar_propiedades(seccion, posicion_maxgif);
+  }
+
+  imagen_maxgif.addEventListener("load", function(event) {
+  imagen_maxgif.style.display = "inline";
+  loader.style.display = "none";
+  });
+
+}
+
+function maximixar_flecha_der(seccion, posicion) {
+
+  if (seccion == "resultado") {
+
+    contenedor = contenedor_resultado.childElementCount - 1;
+
+  } else if (seccion == "trending") {
+
+    contenedor = contenedor_trending.childElementCount;
+
+  }
+
+  const boton = document.querySelectorAll('.icon_max');
+
+  imagen_maxgif.style.display = "none";
+  loader.style.display = "block";
+
+  if (posicion_maxgif < contenedor) {
+    posicion_maxgif++;
+    console.log("Flecha der");
+    maximixar_propiedades(seccion, posicion_maxgif);
+  }else{
+    posicion_maxgif = 0;
+    console.log("Devuelta al inicio");
+    maximixar_propiedades(seccion, posicion_maxgif);
+  }
+
+  imagen_maxgif.addEventListener("load", function(event) {
+  imagen_maxgif.style.display = "inline";
+  loader.style.display = "none";
+  });
+
+}
+
+//////////////////////////////////////////////////
+
+// FLECHAS SECCION TRENDING
+
+function flechas_trending() {
+
+  let flecha_trending_left = document.querySelector(".left_trending");
+  let flecha_trending_right = document.querySelector(".right_trending");
+
+  flecha_trending_left.addEventListener('click', ()=>{
+
+    if (posicion_trending > 0) {
+      //console.log("trending_izq");
+
+      while (contenedor_trending.hasChildNodes()) {  
+        contenedor_trending.removeChild(contenedor_trending.firstChild);
+      }
+
+      posicion_trending--
+      trending(6, posicion_trending);
+    }
+
+  });
+
+  flecha_trending_right.addEventListener('click', ()=>{
+
+    if (posicion_trending < 3) {
+      //console.log("trending_der");
+
+      while (contenedor_trending.hasChildNodes()) {  
+        contenedor_trending.removeChild(contenedor_trending.firstChild);
+      }
+
+      posicion_trending++
+      trending(6, posicion_trending);
+    }
+
+  });
+
+}
+
+//////////////////////////////////////////////////
+
+function agregar_favoritos(pos, id, seccion) {
 
   const icon_fav = document.querySelectorAll('.icon_fav');
 
@@ -629,9 +696,19 @@ function agregar_favoritos(pos, id) {
 
   if (resultado === undefined ) {
 
-    bd_favoritos.push(bd[pos]);
-    icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
-    //console.log("fav agregado");
+    if (seccion == "resultado") {
+
+      bd_favoritos.push(bd[pos]);
+      icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
+      //console.log("fav agregado");
+
+    } else if (seccion == "trending") {
+
+      bd_favoritos.push(bd_trending[pos]);
+      icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
+      //console.log("fav agregado");
+
+    }
 
   } else {
 
@@ -664,6 +741,49 @@ function comprobar_favoritos(pos, id) {
     icon_fav[pos].setAttribute("src", "./assets/icon-fav-active.svg")
     //console.log("fav agregado");
   }
+
+}
+
+crear_favoritos();
+
+function crear_favoritos() {
+
+        posicion_maxgif = 0
+
+        let cantidad = bd_favoritos.length
+
+        if (cantidad > 0) {
+
+          for (var i = 0; i < cantidad; i++) {
+
+            crearimg(
+            bd_favoritos[i].images.preview_gif.url,
+            bd_favoritos[i].username,
+            bd_favoritos[i].title,
+            bd_favoritos[i].id,
+            bd_favoritos[i].images.original.url,
+            bd_favoritos.length - 1,
+            "resultado"
+            );
+
+          }
+
+          maximixar("resultado");
+
+          resultado_vacio("none")
+
+          if (cantidad < 12) {
+            ver_mas.style.display = "none";
+          } else {
+            ver_mas.style.display = "inline";
+          }
+
+        } else {
+
+          resultado_vacio("inline");
+          ver_mas.style.display = "none";
+
+        }
 
 }
 

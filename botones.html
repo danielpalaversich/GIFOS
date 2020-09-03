@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- <link rel="stylesheet" href="styles/style.css"> -->
+	<title>Botones</title>
+
+<style>
+
+* {
+	border: 0;
+	box-shadow: none;
+	margin: 0;
+	outline-width: 0 !important;
+	outline:none !important;
+	padding: 0;
+}
+
+.boton {
+	border: 1px solid #572EE5;
+	background-color: white;
+	font-family: 'Montserrat';
+	color: #572EE5;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    cursor: pointer;
+}
+
+.boton:hover {
+	background-color: #572EE5;
+	color: white;
+}
+
+.boton img {
+    height: 14px;
+    width: 8px;
+    filter: brightness(1);
+}
+
+.boton:hover img {
+    filter: brightness(5);
+}
+
+.ver_mas {
+	width: 127px;
+	height: 50px;
+	border-radius: 25px;
+}
+
+.boton_comenzar {
+	width: 127px;
+	height: 50px;
+	border-radius: 25px;
+}
+
+.flechas {
+	width: 127px;
+	height: 50px;
+	border-radius: 25px;
+}
+
+.icono {
+	width: 36px;
+	height: 36px;
+	border: 1px solid #CED7E1;
+	border-radius: 6px;
+}
+
+</style>
+
+
+</head>
+<body>
+
+<div class="seccion resultado-busqueda">
+	<button id="ver_mas" class="boton ver_mas">VER MÁS</button>
+</div>
+
+<div class="seccion trending">
+	<button class="boton"><img src="./assets/button-left.svg" class="flechas left_trending"/></button>
+	<button class="boton"><img src="./assets/button-right.svg" class="flechas right_trending"/></button>
+</div>
+
+<div class="seccion maxgif">
+	<button class="boton"><img src="./assets/button-close.svg" class="boton_cerrar"/></button>
+	<button class="boton flechas right_maxgifos"><img src="./assets/button-right.svg"></button>
+	<button class="boton flechas left_maxgifos"><img src="./assets/button-left.svg"></button>
+</div>
+
+<div class="seccion creargif">
+	<button class="boton boton_comenzar">COMENZAR</button>
+</div>
+
+</body>
+</html>

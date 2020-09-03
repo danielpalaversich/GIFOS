@@ -7,26 +7,30 @@
 	<script src="https://kit.fontawesome.com/2095ce4bec.js" crossorigin="anonymous"></script>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+	<!-- <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.6.1/RecordRTC.js"></script>
+	<!-- <script src=".\modulos\RecordRTC"></script> -->
 
 </head>
 <body>
 
 	<!-- +++++++++++++++++++++++++++  HEADER  +++++++++++++++++++++++++++ -->
 
+	<div class="sup"></div>
+
     <header>
-    	<a href="index.html" tabindex="0">
-           	<img src="assets/logo-desktop.svg" alt="logo" class="logo"/>
+    	<a href="index.html">
+           	<img src="./assets/logo-desktop.svg" class="logo"/>
         </a>
         <nav>
             <div class="menu">
-                <!-- <input type="checkbox" id="checkbox" /> -->
-				<i class="fas fa-bars"></i>
+                <button id="checkbox"><img id="img_menu" src="./assets/burger.svg"></button>  
                 <ul class="ul">
-                    <li><a href="" tabindex="1">MODO NOCTURNO</a></li>
-                    <li><a href="favoritos.html" tabindex="2">FAVORITOS</a></li>
-                    <li><a href="misgifos.html" tabindex="3">MIS GIFOS</a></li>
-                    <li><a href="creargif.html" tabindex="4">
-                    		<img src="assets/button-crear-gifo.svg" alt="crear" class="crear"/>
+                    <li><a href="">MODO NOCTURNO</a></li>
+                    <li><a href="favoritos.html">FAVORITOS</a></li>
+                    <li><a href="misgifos.html">MIS GIFOS</a></li>
+                    <li><a href="creargif.html" class="boton crear">
+                    		<img src="./assets/button-crear-gifo.svg"/>
                     	</a>
                     </li>
                 </ul>
@@ -37,35 +41,49 @@
 	<!-- +++++++++++++++++++++++++++ SECCION creargif +++++++++++++++++++++++++++ -->
 
 	<div class="seccion creargif">
-		<!--<div>
-			<img src="assets/element_cinta1.svg" alt="crear" class="cinta1"/>
-			<img src="assets/element_cinta2.svg" alt="crear" class="cinta2"/>
-			<img src="assets/element-camara.svg" alt="crear" class="camara"/>
-			<img src="assets/element-luz-camara.svg" alt="crear" class="luz"/>
-		</div>-->
-		<div>
-			<img src="assets/camara.svg" alt="crear" class="camara"/>
-			<img src="assets/element-luz-camara.svg" alt="crear" class="luz"/>
-		</div>
-		<div>
-			<div class="contenedor">
-				<h3>Aquí podrás <br> crear tus propios <span id="gif">GIFOS</span></h3>
-				<div>
-					<p>¡Crea tu GIFO en sólo 3 pasos! <br> (sólo necesitas una cámara para grabar un video)</p>
-				</div>
-			</div>
+		<div class="supercontenedor">
+			<!--<div>
+				<img src="assets/element_cinta1.svg" alt="crear" class="cinta1"/>
+				<img src="assets/element_cinta2.svg" alt="crear" class="cinta2"/>
+				<img src="assets/element-camara.svg" alt="crear" class="camara"/>
+				<img src="assets/element-luz-camara.svg" alt="crear" class="luz"/>
+			</div>-->
 			<div>
-				<div class="pasos">
-					<div class="numero">1</div>
-					<div class="numero">2</div>
-					<div class="numero">3</div>
+				<div class="contenedor_total">
+					<div class="contenedor_camara">
+						<img src="assets/camara.svg" alt="crear" class="camara"/>
+						<img src="assets/element-luz-camara.svg" alt="crear" class="luz"/>
+					</div>
+					<div class="contenedor_rollo">
+						<img src="assets/element_cinta2.svg" alt="crear" class="cinta3"/>
+					</div>
+					<div class="contenedor_titulos">
+						<h3 id="titulos">Aquí podrás <br> crear tus propios <span id="gif">GIFOS</span></h3>
+						<p id="texto">¡Crea tu GIFO en sólo 3 pasos! <br> (sólo necesitas una cámara para grabar un video)</p>
+					</div>
+					<video id="gif_video"></video>
 				</div>
-				<div class="linea"></div>
-				<button class="boton">COMENZAR</button>
+				<div>
+					<div class="contenedor_pasos">
+						<div></div>
+						<div class="pasos">
+							<div class="numero">1</div>
+							<div class="numero">2</div>
+							<div class="numero">3</div>
+						</div>
+						<div id="tiempo">00:00:00</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<img src="assets/element_cinta2.svg" alt="crear" class="cinta3"/>
+		<dir class="contenedor_comenzar">
+			<div class="linea"></div>
+			<div class="comenzar">
+				<button class="boton boton_comenzar">COMENZAR</button>
+			</div>
+		</dir>
 	</div>
+
 
 	<!-- +++++++++++++++++++++++++++  FOOTER  +++++++++++++++++++++++++++ -->
 
@@ -73,15 +91,21 @@
 		<div class="contenedor">
 			<div class="social">
 				<p>Compartir en:</p>
-				<a href="https://www.facebook.com"> <i class="fab fa-facebook"></i> </a>
-				<a href="https://www.twitter.com"> <i class="fab fa-twitter"></i> </a>
-				<a href="https://www.instagram.com"> <i class="fab fa-instagram"></i> </a>
+				<div class="social_iconos">
+					<a href="https://www.facebook.com"> <img src="./assets/icon_facebook.svg"></a>
+					<a href="https://www.twitter.com"> <img src="./assets/icon-twitter.svg"></a>
+					<a href="https://www.instagram.com"> <img src="./assets/icon_instagram.svg"></a>
+				</div>
 			</div>
 			<p>© GIFOS 2020 All Rights Reserved.</p>
 		</div>
 	</footer>
-    
-    <script src="scripts/script.js"></script> 
+
+	<div class="inf"></div>
+
+    <script src="./scripts/declaracion.js"></script>
+    <script src="./scripts/script_creargif.js"></script>
+
 
 </body>
 </html>

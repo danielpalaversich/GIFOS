@@ -14,43 +14,46 @@
     <!-- +++++++++++++++++++++++++++ SECCION maxgif +++++++++++++++++++++++++++ -->
 
 	<div class="seccion maxgif"> 
-  		<img src="./assets/button-left.svg" class="flechas left_maxgifos"/>
+  		<button class="boton flechas left_maxgifos"><img src="./assets/button-left.svg"></button>
   		<div>
   			<img src="https://picsum.photos/695/385" class="imagen_maxgif">
   			<div class="loader">
   				<img src="./assets/loader.svg" class="img_loader"/>
   			</div>
   			<div class="contenedor">
-  				<h6 class="maxgif_usuario">User</h6>
-				<h5 class="maxgif_titulo">Titulo GIFO</h5>
-				<a href="#" class="icono">
-					<img src="./assets/icon-fav-hover.svg" class="boton"/>
-  				</a>
-  				<a href="#" class="icono">
-					<img src="./assets/icon-download.svg" class="boton"/>
-  				</a>
+  				<div class="contenedor_izq">
+  					<h6 class="maxgif_usuario">User</h6>
+					<h5 class="maxgif_titulo">Titulo GIFO</h5>
+  				</div>
+				<div class="contenedor_der">
+					<a onclick='agregar_favoritos()' class='boton icono'><img id="icon_fav" src='./assets/icon-fav-hover.svg'/></a>
+  					<a onclick='descargar()' class='boton icono'><img id="icon_download" src='./assets/icon-download.svg'/></a>
+				</div>
   			</div>
   		</div>
-  		<img src="./assets/button-right.svg" class="flechas right_maxgifos"/>
-   		<img src="./assets/button-close.svg" class="boton_cerrar"/>
+  		<div class="posicion_der">
+  			<button class="boton flechas right_maxgifos"><img src="./assets/button-right.svg"></button>
+   			<img src="./assets/button-close.svg" class="boton_cerrar"/>
+  		</div>
   	</div>
 
 	<!-- +++++++++++++++++++++++++++  HEADER  +++++++++++++++++++++++++++ -->
 
+	<div class="sup"></div>
+
     <header>
-    	<a href="index.html" tabindex="0">
-           	<img src="./assets/logo-desktop.svg" alt="logo" class="logo"/>
+    	<a href="index.html">
+           	<img src="./assets/logo-desktop.svg" class="logo"/>
         </a>
         <nav>
             <div class="menu">
-                <!-- <input type="checkbox" id="checkbox" /> -->
-				<i class="fas fa-bars"></i>
+                <button id="checkbox"><img id="img_menu" src="./assets/burger.svg"></button>  
                 <ul class="ul">
-                    <li><a href="" tabindex="1">MODO NOCTURNO</a></li>
-                    <li><a href="favoritos.html" tabindex="2">FAVORITOS</a></li>
-                    <li><a href="misgifos.html" tabindex="3">MIS GIFOS</a></li>
-                    <li><a href="creargif.html" tabindex="4">
-                    		<img src="./assets/button-crear-gifo.svg" alt="crear" class="crear"/>
+                    <li><a id="modo_nocturno">MODO NOCTURNO</a></li>
+                    <li><a href="favoritos.html">FAVORITOS</a></li>
+                    <li><a href="misgifos.html">MIS GIFOS</a></li>
+                    <li><a href="creargif.html" class="boton crear">
+                    		<img src="./assets/button-crear-gifo.svg"/>
                     	</a>
                     </li>
                 </ul>
@@ -62,7 +65,7 @@
 
 	<div class="seccion busqueda">
 		<h1>Inspírate, busca, guarda, y crea <br> los mejores <span id="gif">GIFOS</span></h1>
-		<div>
+		<div id="contenedor_busqueda">
 			<img src="./assets/ilustra_header.svg" id="buscar" class="ilustra"/>
 			<div id="buscador_general">
 				<div id="barra">
@@ -74,8 +77,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="trending_lista">
-		</div>
+		<div id="trending_lista"></div>
 	</div>
 
 	<!-- +++++++++++++++++++++++++++ SECCION resultado-busqueda +++++++++++++++++++++++++++ -->
@@ -86,7 +88,7 @@
 		</div>
 		<div id="contenedor_resultado">
 		</div>
-		<button id="ver_mas" class="boton" style="display: none;" >VER MÁS</button>
+		<button id="ver_mas" class="boton ver_mas" style="display: none;" >VER MÁS</button>
 	</div>
 
 	<div class="seccion sinresultado_contenedor" style="display: none;">
@@ -112,17 +114,25 @@
 		<div class="contenedor">
 			<div class="social">
 				<p>Compartir en:</p>
-				<a href="https://www.facebook.com"> <i class="fab fa-facebook"></i> </a>
-				<a href="https://www.twitter.com"> <i class="fab fa-twitter"></i> </a>
-				<a href="https://www.instagram.com"> <i class="fab fa-instagram"></i> </a>
+				<div class="social_iconos">
+					<a href="https://www.facebook.com"> <img src="./assets/icon_facebook.svg"></a>
+					<a href="https://www.twitter.com"> <img src="./assets/icon-twitter.svg"></a>
+					<a href="https://www.instagram.com"> <img src="./assets/icon_instagram.svg"></a>
+				</div>
 			</div>
 			<p>© GIFOS 2020 All Rights Reserved.</p>
 		</div>
 	</footer>
 
-    
-    <script src="./scripts/script.js"></script> 
+	<div class="inf"></div>
 
+    <script src="./scripts/declaracion.js"></script>
+    <script src="./scripts/script_index.js"></script>
+    <script src="./scripts/favoritos.js"></script>
+    <script src="./scripts/maximizar.js"></script>
+    <script src="./scripts/trending_seccion.js"></script>
+    <script src="./scripts/descargar.js"></script>
+    <script src="./scripts/modo_nocturno.js"></script>
 
 
 </body>
